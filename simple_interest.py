@@ -33,10 +33,54 @@ class LoanData:
             @ {self.total_interest_rate}% ({self.base_interest_rate}% + {self.margin}%) \
                 from {self._str_start_time()} to {self._str_end_time()}"
 
+    # More legible ASCII table
+    def as_table(self) -> str:
+        tab = prettytable.PrettyTable()
+        tab.field_names = []
+        tab.add_rows(
+            [
+                ["Loan Currency", self.loan_currency_str],
+                ["Loan Amount", self.loan_amount],
+                ["Total Interest Rate (%)", self.total_interest_rate],
+                ["Base Interest Rate (%)", self.base_interest_rate],
+                ["Margin (%)", self.margin],
+            ]
+        )
+
+        return tab.get_string()
+
+
 class Application:
 
     def __init__(self):
         self.loans_history: List[LoanData] = []
+
+    def welcome(self):
+        art.tprint("Simple Loan Interest")
+
+    def prompt(self):
+
+        inp = ""
+
+        while inp != "q":
+
+            print()
+            print("To add a loan: a")
+            print("To update an entry: u")
+            print("To list history: l")
+            print("Quit: q")
+            inp = input("a/u/l/q: ").strip().lower()
+
+            if inp == "q":
+                continue
+            elif inp == "a":
+                self.add_loan()
+            elif inp == "u":
+                self.update_loan()
+            elif inp == "l":
+                self.show_history()
+            else:
+                print(f"Unrecognised input '{inp}'\n")
 
     def run(self):
         self.welcome()
