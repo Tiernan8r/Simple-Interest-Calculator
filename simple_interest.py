@@ -136,6 +136,40 @@ class Application:
 
         print(tab)
 
+    # Show tabulateddaily acrued interest between start & end date
+    def show_loan_output(self, loan: LoanData):
+        delta_days = (loan.end_date - loan.start_date).days
+
+        daily_interest_no_margin = (
+            loan.loan_amount * (loan.base_interest_rate / 100) / 365
+        )
+        daily_interest = loan.loan_amount * (loan.total_interest_rate / 100) / 365
+
+        tab = prettytable.PrettyTable()
+        tab.field_names = [
+            "Acrual Date",
+            "# Days Elapsed",
+            "Daily Interest (No Margin)",
+            "Daily Interest",
+            "Total Interest",
+        ]
+
+        for day_num in range(delta_days):
+            curr_date = loan.start_date + timedelta(days=day_num)
+
+            total_interest = daily_interest * (day_num + 1)
+
+            tab.add_row(
+                [
+                    datetime.strftime(curr_date, "%d/%m/%Y"),
+                    day_num,
+                    f"{loan.loan_currency_str}{daily_interest_no_margin:.2f}",
+                    f"{loan.loan_currency_str}{daily_interest:.2f}",
+                    f"{loan.loan_currency_str}{total_interest:.2f}",
+                ]
+            )
+
+        print(tab)
 
     def run(self):
         self.welcome()
