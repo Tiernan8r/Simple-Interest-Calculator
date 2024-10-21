@@ -146,11 +146,11 @@ class Application:
                 break
 
             try:
-                base_interest_rate = int(base_interest_rate_str)
+                base_interest_rate = float(base_interest_rate_str)
                 break
             except ValueError:
                 print(
-                    f"'{base_interest_rate_str}' could not be parsed as an integer, try again!"
+                    f"'{base_interest_rate_str}' could not be parsed as a float, try again!"
                 )
 
         # Margin with type check
@@ -165,10 +165,10 @@ class Application:
                 break
 
             try:
-                margin = int(margin_str)
+                margin = float(margin_str)
                 break
             except ValueError:
-                print(f"'{margin_str}' could not be parsed as an integer, try again!")
+                print(f"'{margin_str}' could not be parsed as a float, try again!")
 
         # Start date with type check
         while True:
