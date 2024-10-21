@@ -16,4 +16,17 @@ class LoanData:
     def total_interest_rate(self):
         return self.base_interest_rate + self.margin
 
+class Application:
 
+    def __init__(self):
+        self.loans_history: List[LoanData] = []
+
+    def run(self):
+        self.welcome()
+        self.prompt()
+
+
+if __name__ == "__main__":
+
+    app = Application()
+    app.run()
