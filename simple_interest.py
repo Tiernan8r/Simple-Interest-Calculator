@@ -58,6 +58,8 @@ class Application:
     def welcome(self):
         art.tprint("Simple Loan Interest")
 
+        self.add_loan()
+
     def prompt(self):
 
         inp = ""
@@ -81,6 +83,18 @@ class Application:
                 self.show_history()
             else:
                 print(f"Unrecognised input '{inp}'\n")
+
+
+    def add_loan(self, existing_loan=None):
+        # Get the loan struct
+        loan = self._loan_input_prompt()
+
+        # save it to the record
+        self.loans_history.append(loan)
+
+        # Show the interest acrual
+        self.show_loan_output(loan)
+
 
     def run(self):
         self.welcome()
