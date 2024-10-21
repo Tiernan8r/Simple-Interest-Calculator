@@ -84,6 +84,129 @@ class Application:
             else:
                 print(f"Unrecognised input '{inp}'\n")
 
+    # If given a loan object, also used to update that entry...
+    def _loan_input_prompt(self, existing_loan=None):
+
+        # If given an existing loan struct, create strings to notify user of existing values that can be re-accepted
+        existing_loan_amount_str = ""
+        existing_currency_str = ""
+        existing_base_interest_str = ""
+        existing_margin_str = ""
+        existing_start_str = ""
+        existing_end_str = ""
+
+        if existing_loan is not None:
+            existing_loan_amount_str = (
+                f" (existing = {existing_loan.loan_amount}; leave blank to accept)"
+            )
+            existing_currency_str = f" (existing = {existing_loan.loan_currency_str}; leave blank to accept)"
+            existing_base_interest_str = f" (existing = {existing_loan.base_interest_rate}%; leave blank to accept)"
+            existing_margin_str = (
+                f" (existing = {existing_loan.margin}%; leave blank to accept)"
+            )
+            existing_start_str = f" (existing = {datetime.strftime(existing_loan.start_date, "%d-%m-%Y")}; leave blank to accept)"
+            existing_end_str = f" (existing = {datetime.strftime(existing_loan.end_date, "%d-%m-%Y")}; leave blank to accept)"
+
+        # =======================
+        # Do the actual prompting
+        # =======================
+
+        # Loan Amount with type check
+        while True:
+            loan_amount_str = input(
+                f"Enter the loan amount{existing_loan_amount_str}: "
+            )
+            # User can give empty input to not overwrite current value
+            if not loan_amount_str and existing_loan is not None:
+                loan_amount = existing_loan.loan_amount
+                break
+
+            try:
+                loan_amount = float(loan_amount_str)
+                break
+            except ValueError:
+                print(f"'{loan_amount_str}' could not be parsed as a float, try again!")
+
+        # Currency
+        curr_str = input(f"Input the currency{existing_currency_str}: ")
+        if not curr_str and existing_loan is not None:
+            currency = existing_loan.loan_currency_str
+        else:
+            currency = curr_str
+
+        # Base interest rate with type check
+        while True:
+            base_interest_rate_str = input(
+                f"Input the base interest rate{existing_base_interest_str} (as a percentage): "
+            )
+
+            # User can give empty input to not overwrite current value
+            if not base_interest_rate_str and existing_loan is not None:
+                base_interest_rate = existing_loan.base_interest_rate
+                break
+
+            try:
+                base_interest_rate = int(base_interest_rate_str)
+                break
+            except ValueError:
+                print(
+                    f"'{base_interest_rate_str}' could not be parsed as an integer, try again!"
+                )
+
+        # Margin with type check
+        while True:
+            margin_str = input(
+                f"Input the margin{existing_margin_str} (as a percentage): "
+            )
+
+            # User can give empty input to not overwrite current value
+            if not margin_str and existing_loan is not None:
+                margin = existing_loan.margin
+                break
+
+            try:
+                margin = int(margin_str)
+                break
+            except ValueError:
+                print(f"'{margin_str}' could not be parsed as an integer, try again!")
+
+        # Start date with type check
+        while True:
+            start_date_str = input(
+                f"Input the start date{existing_start_str} (dd-MM-YYYY): "
+            )
+
+            # User can give empty input to not overwrite current value
+            if not start_date_str and existing_loan is not None:
+                start_date = existing_loan.start_date
+                break
+            try:
+                start_date = datetime.strptime(start_date_str, "%d-%m-%Y")
+                break
+            except ValueError:
+                print(f"'{start_date_str}' could not be parsed to a date, try again!")
+
+        # End date with type check
+        while True:
+            end_date_str = input(f"Input the end date{existing_end_str} (dd-MM-YYYY): ")
+
+            # User can give empty input to not overwrite current value
+            if not end_date_str and existing_loan is not None:
+                end_date = existing_loan.end_date
+                break
+
+            try:
+                end_date = datetime.strptime(end_date_str, "%d-%m-%Y")
+                break
+            except ValueError:
+                print(f"'{end_date_str}' could not be parsed to a date, try again!")
+        # I've assumed start date is before end date implicitly...
+
+        loan = LoanData(
+            start_date, end_date, loan_amount, currency, base_interest_rate, margin
+        )
+
+        return loan
 
     def add_loan(self, existing_loan=None):
         # Get the loan struct
