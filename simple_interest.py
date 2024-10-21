@@ -95,6 +95,47 @@ class Application:
         # Show the interest acrual
         self.show_loan_output(loan)
 
+    def update_loan(self):
+        # Show the list of loans first
+        self.show_history()
+        # prompt for an index to update
+        n = len(self.loans_history)
+        idx = -1
+        while idx < 0 or idx >= n:
+            idx_str = input(
+                f"Select an entry index between 0 & {n - 1} (or q to quit): "
+            )
+            if idx_str.lower() == "q":
+                return
+
+            try:
+                idx = int(idx_str)
+            except ValueError:
+                print(f"'{idx_str}' is not a valid number")
+
+        # get the existing loan struct
+        loan = self.loans_history[idx]
+        # prompt for updates on the values
+        updated_loan = self._loan_input_prompt(loan)
+
+        # overwrite the existing entry
+        self.loans_history[idx] = updated_loan
+
+        # show the interest acrual tabulated
+        self.show_loan_output(updated_loan)
+
+    def show_history(self):
+        if len(self.loans_history) == 0:
+            print("No history to show!")
+            return
+
+        tab = prettytable.PrettyTable()
+        tab.field_names = ["Entry #", "Details"]
+        for idx, loan in enumerate(self.loans_history):
+            tab.add_row([idx, str(loan)])
+
+        print(tab)
+
 
     def run(self):
         self.welcome()
